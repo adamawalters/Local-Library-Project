@@ -12,7 +12,7 @@ function sortAccountsByLastName(accounts) {
   //if yes, return -1, if no, return 1
 
   let sortedArray = accounts.sort((account1, account2) => {
-    return account1.name.last < account2.name.last ? -1 : 1; 
+    return account1.name.last < account2.name.last ? -1 : 1; //ternary operator
   })
 
   return sortedArray;

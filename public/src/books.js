@@ -17,8 +17,8 @@ function partitionBooksByBorrowedStatus(books) {
 //find books that are returned (all borrowEvents have returned as true)
 //return these arrays together in an array
 
-let checkedOut = [];
-let returned = [];
+const checkedOut = [];
+const returned = [];
 
 books.forEach(book => {
   let isCheckedOut = isCheckedOutFunction(book.borrows);
@@ -29,11 +29,9 @@ return [checkedOut, returned];
 }
 
 function isCheckedOutFunction (borrowsArray) {
-  
    const checkedOut = borrowsArray.some(borrowEvent => {
     return !borrowEvent.returned;
   })
-
   return checkedOut;
 }
 
@@ -42,19 +40,19 @@ function getBorrowersForBook(book, accounts) {
   //add account["returned"] - find the borrowEvent where the account ID equals the book ID and add that value
   //iterate through all accounts - if they've checked out the book,  - add the returned value and add that object to an array
 
-    let relevantAccounts = accounts.filter(account => {
-      return accountHasCheckedOutBook(book.borrows, account)
+    const relevantAccounts = accounts.filter(account => {
+      return accountHasCheckedOutBook(book, account)
     })
 
-    let accountsWithReturned = addReturned(relevantAccounts, book.borrows);
+    const accountsWithReturned = addReturned(relevantAccounts, book.borrows);
 
     return accountsWithReturned;
 
 }
 
 function addReturned(relevantAccounts, borrowsArray) {
-  let accountsWithReturned = relevantAccounts.map(account => {
-    let relevantBorrow = borrowsArray.find(borrow => {
+  const accountsWithReturned = relevantAccounts.map(account => {
+    const relevantBorrow = borrowsArray.find(borrow => {
       return borrow.id === account.id;
     })
     account["returned"] = relevantBorrow.returned;
@@ -64,8 +62,8 @@ function addReturned(relevantAccounts, borrowsArray) {
 }
 
 
-function accountHasCheckedOutBook(borrowsArray, account) {
-  let checkedOut = borrowsArray.some(borrowEvent => {
+function accountHasCheckedOutBook({borrows : borrowsArray}, account) {
+  const checkedOut = borrowsArray.some(borrowEvent => {
     return borrowEvent.id === account.id;
   })
   return checkedOut;

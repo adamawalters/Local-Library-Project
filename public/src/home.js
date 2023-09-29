@@ -8,8 +8,9 @@ function getTotalAccountsCount(accounts) {
 
 function getBooksBorrowedCount(books) {
 //use reduce function to go through book.array
-let totalBooksBorrowed = books.reduce((total, book) => {
-  let bookIsBorrowed = isBookBorrowed(book.borrows);
+//check if book is borrowed - if so, increment
+const totalBooksBorrowed = books.reduce((total, book) => {
+  const bookIsBorrowed = isBookBorrowed(book.borrows);
   if(bookIsBorrowed) {
     return total+1;
   }
@@ -20,11 +21,13 @@ return totalBooksBorrowed;
 }
 
 function isBookBorrowed(bookArray) {
+  //check if any item in the borrows event is currently checked out
   return bookArray.some(borrowEvent => {
     return !borrowEvent.returned;
   })
 }
 
+/*
 function getMostCommonGenres(books) {
   //iterate through array of books
   //for each book, increment an object that contains the genre and a number for how many times genre is present in books
@@ -32,8 +35,8 @@ function getMostCommonGenres(books) {
   // sort the array based on highest genre
   //truncate and return the array
 
-  let genreRankings = {}
-  let genreRankingsArray = []
+  const genreRankings = {}
+  const genreRankingsArray = []
 
   //this adds each genre and its value to an object
   books.forEach(book => {
@@ -45,7 +48,7 @@ function getMostCommonGenres(books) {
   })
 
   for (let genre in genreRankings) {
-    let genreObj = {
+    const genreObj = {
       "name" : genre,
       "count" : genreRankings[genre]
     }
@@ -59,6 +62,41 @@ function getMostCommonGenres(books) {
   genreRankingsArray.length = 5;
   return genreRankingsArray;
 
+}*/
+
+function getMostCommonGenres(books) { 
+  //another method - iterate through each book. for each book, find the relevant genre object in the array
+  //if it exists, update the count, otherwise create the object and push it into the array
+
+  //the array to return, full of most common genres
+  const genreRankingsArray = [];
+
+  //for each book - find the relevant genre object in the genreRankingsArray
+  books.forEach(book => {
+    const genreObj = genreRankingsArray.find(ranking => {
+      return ranking.name === book.genre;
+    })
+
+    //if the genre object exists, increment it, otherwise create it and add it to the genres array
+    if(genreObj) {
+      genreObj.count += 1;
+    } else {
+      const newGenre = {
+        name: book.genre,
+        count: 1,
+      }
+      genreRankingsArray.push(newGenre);
+    }
+  })
+
+  genreRankingsArray.sort((genre1, genre2) => {
+    return genre2.count - genre1.count;
+  })
+
+  //limit the array to length 5
+  genreRankingsArray.length = 5;
+  return genreRankingsArray;
+
 }
 
 function getMostPopularBooks(books) {
@@ -67,11 +105,12 @@ function getMostPopularBooks(books) {
   //sort the array
   //return the array
 
-  let numBorrowed = [];
+  const numBorrowed = [];
 
+  //Iterate through each book - add the number of times it's been borrowed and its title to an object and push the object to an array
   books.forEach(book => {
-    let numTimesBorrowed = book.borrows.length;
-    let bookObj = {
+    const numTimesBorrowed = book.borrows.length;
+    const bookObj = {
         name : book.title,
         count : numTimesBorrowed,
     }
@@ -90,14 +129,15 @@ function getMostPopularBooks(books) {
 function getMostPopularAuthors(books, authors) {
   //for each author - need to see how many times their books have been checked out and add it to an object (name: author, count: count)
 
-  let popularAuthors = [];
+  const popularAuthors = [];
 
+  //for each author, create an object with the author name and count of times their books have been checked out - push object to array
   authors.forEach(author => {
-    let popularity = getPopularity (books, author);
+    const count = getPopularity(books, author);
 
-    let authorObj = {
+    const authorObj = {
       name: `${author.name.first} ${author.name.last}`,
-      count: popularity,
+      count, //object shorthand
     }
 
     popularAuthors.push(authorObj);
@@ -121,8 +161,8 @@ function getPopularity(books, author) {
     return author.id === book.authorId;
   })
 
-  let totalTimesBorrowed = authorBooks.reduce((total, book) => {
-    let borrowArray = book.borrows;
+  const totalTimesBorrowed = authorBooks.reduce((total, book) => {
+    const borrowArray = book.borrows;
     return total + borrowArray.length;
   }, 0) 
 
